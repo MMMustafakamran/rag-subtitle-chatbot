@@ -1,8 +1,5 @@
 streamlit
 openai
 sentence-transformers
-faiss-cpu
-psycopg2-binary
-pgvector
+chromadb
 numpy
-pickle5
