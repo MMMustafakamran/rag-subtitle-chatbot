@@ -9,21 +9,13 @@ import json
 class ChromaDBEmbeddingStore:
     """
     ChromaDB-based embedding store for RAG applications.
-    Much easier to set up than PostgreSQL - no database server needed!
     """
     
     def __init__(self, 
                  persist_directory: str = "data/chromadb", 
                  model_name: str = "all-MiniLM-L6-v2",
                  collection_name: str = "movie_subtitles"):
-        """
-        Initialize ChromaDB embedding store.
-        
-        Args:
-            persist_directory (str): Directory to save ChromaDB data
-            model_name (str): Sentence transformer model name
-            collection_name (str): Name of the ChromaDB collection
-        """
+       
         self.persist_directory = persist_directory
         self.model_name = model_name
         self.collection_name = collection_name
@@ -31,9 +23,9 @@ class ChromaDBEmbeddingStore:
         self.client = None
         self.collection = None
         
-        print(f"🚀 Initializing ChromaDB Embedding Store")
-        print(f"📁 Data directory: {persist_directory}")
-        print(f"🤖 Model: {model_name}")
+        print(f" Initializing ChromaDB Embedding Store")
+        print(f" Data directory: {persist_directory}")
+        print(f" Model: {model_name}")
         
         self._setup_chromadb()
         self._load_model()
@@ -53,34 +45,26 @@ class ChromaDBEmbeddingStore:
                 metadata={"description": "Movie subtitle chunks for RAG"}
             )
             
-            print(f"✅ ChromaDB initialized successfully!")
-            print(f"📊 Collection '{self.collection_name}' ready")
+            print(f" ChromaDB initialized successfully!")
+            print(f"Collection '{self.collection_name}' ready")
             
         except Exception as e:
-            print(f"❌ ChromaDB setup failed: {e}")
+            print(f" ChromaDB setup failed: {e}")
             raise
     
     def _load_model(self):
         """Load sentence transformer model."""
         try:
-            print("🔄 Loading sentence transformer model...")
+            print(" Loading sentence transformer model...")
             self.model = SentenceTransformer(self.model_name)
-            print(f"✅ Model loaded! Embedding dimension: {self.model.get_sentence_embedding_dimension()}")
+            print(f" Model loaded! Embedding dimension: {self.model.get_sentence_embedding_dimension()}")
         except Exception as e:
-            print(f"❌ Model loading failed: {e}")
+            print(f" Model loading failed: {e}")
             raise
     
     def store_movie_chunks(self, movie_title: str, movie_year: int, chunks: List[Dict]) -> str:
         """
         Store movie chunks with embeddings in ChromaDB.
-        
-        Args:
-            movie_title (str): Title of the movie
-            movie_year (int): Year of the movie
-            chunks (List[Dict]): List of subtitle chunks from parser
-            
-        Returns:
-            str: Movie identifier
         """
         if not chunks:
             raise ValueError("No chunks provided")
@@ -92,7 +76,7 @@ class ChromaDBEmbeddingStore:
             # Clear existing chunks for this movie
             existing_ids = self._get_movie_chunk_ids(movie_id)
             if existing_ids:
-                print(f"🗑️ Removing {len(existing_ids)} existing chunks...")
+                print(f" Removing {len(existing_ids)} existing chunks...")
                 self.collection.delete(ids=existing_ids)
             
             # Prepare data for ChromaDB
@@ -121,7 +105,7 @@ class ChromaDBEmbeddingStore:
                 metadatas.append(metadata)
             
             # Generate embeddings (ChromaDB can do this automatically, but we use our model for consistency)
-            print("🧠 Generating embeddings...")
+            print(" Generating embeddings...")
             embeddings = self.model.encode(
                 texts,
                 show_progress_bar=True,
@@ -138,11 +122,11 @@ class ChromaDBEmbeddingStore:
                 ids=ids
             )
             
-            print(f"✅ Successfully stored {len(chunks)} chunks for '{movie_title}'")
+            print(f" Successfully stored {len(chunks)} chunks for '{movie_title}'")
             return movie_id
             
         except Exception as e:
-            print(f"❌ Error storing chunks: {e}")
+            print(f" Error storing chunks: {e}")
             raise
     
     def _get_movie_chunk_ids(self, movie_id: str) -> List[str]:
@@ -211,7 +195,7 @@ class ChromaDBEmbeddingStore:
             return search_results
             
         except Exception as e:
-            print(f"❌ Search error: {e}")
+            print(f" Search error: {e}")
             raise
     
     def get_movie_stats(self, movie_id: str) -> Dict:
