@@ -2,7 +2,7 @@ import streamlit as st
 import os
 from typing import List, Dict
 import time
-
+##python -m streamlit run app.py
 # Page configuration
 st.set_page_config(
     page_title="🎬 Movie Chatbot",
